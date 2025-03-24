@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Liste des commandes</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Total</th>
+                <th>Spécification</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for commande in commandes %}
+            <tr>
+                <td>{{ commande.id }}</td>
+                <td>{{ commande.produit.nom }}</td>
+                <td>{{ commande.quantity }}</td>
+                <td>{{ commande.total }}</td>
+                <td>{{ commande.Specification }}</td>
+                <td>{{ commande.date_commande }}</td>
+                <td>
+                    <a href="{% url 'generate_facture' commande.id %}" class="btn btn-primary">Générer Facture</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

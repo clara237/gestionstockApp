@@ -1,0 +1,135 @@
+{% extends "base_magasinier.html" %}
+{% block title %}Tableau de bord{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">Tableau de bord</h2>
+    
+    <!-- Cards -->
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total des ventes</h5>
+                    <p class="card-text">{{ total_sales }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total des clients</h5>
+                    <p class="card-text">{{ total_clients }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Produits en stock</h5>
+                    <p class="card-text">{{ total_products }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Produits en rupture</h5>
+                    <p class="card-text">{{ total_out_of_stock }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts -->
+    <div class="row">
+        <div class="col-md-6">
+            <canvas id="salesChart"></canvas>
+        </div>
+        <div class="col-md-6">
+            <canvas id="clientsChart"></canvas>
+        </div>
+    </div>
+    
+    <!-- Table -->
+    <div class="mt-4">
+        <h3>Liste des produits</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Prix</th>
+                    <th scope="col">Quantité</th>
+                    <th scope="col">Date d'ajout</th>
+                    <th scope="col">Catégorie</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.nom }}</td>
+                    <td>{{ product.description }}</td>
+                    <td>{{ product.prix }}</td>
+                    <td>{{ product.quantite }}</td>
+                    <td>{{ product.date_added|date:"d/m/Y" }}</td>
+                    <td>{{ product.categorie }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center">Aucun produit disponible</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Chart.js Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('salesChart').getContext('2d');
+    var salesChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: {{ sales_labels|safe }},
+            datasets: [{
+                label: 'Ventes',
+                data: {{ sales_data|safe }},
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    var ctx2 = document.getElementById('clientsChart').getContext('2d');
+    var clientsChart = new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: {{ clients_labels|safe }},
+            datasets: [{
+                label: 'Clients',
+                data: {{ clients_data|safe }},
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

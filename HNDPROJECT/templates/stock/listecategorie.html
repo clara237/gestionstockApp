@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{%block content%}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    tr {
+        background-color: white;
+    }
+
+    tr:hover {
+        background-color: #e6f2ff; /* Bleu clair pour le survol */
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #99ccff; /* Bleu professionnel pour l'en-tête */
+    }
+</style>
+<div class="container">
+    <h2>Liste des produits</h2>
+    <table class="table table-striped">
+        <thead>
+
+            <tr>
+                <th scope="col">Nom</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for categorie in categories %}
+            <tr>
+              <td>{{ categorie.nom }}</td>
+              <td>{{ categorie.description }}</td>
+              
+            </tr>
+            
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{%endblock%}

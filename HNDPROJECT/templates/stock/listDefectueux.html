@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content%}
+
+<div class="container">
+    <h2>Liste des produits</h2>
+    <table  id="datatable-buttons" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Quantité</th>
+                <th scope="col">Description du dégât</th>
+                <th scope="col">Produits</th>
+                <th scope="col">Actions</th> <!-- Nouvelle colonne pour les actions -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for Produit_defectueux in Produits_defectueux %}
+            <tr>
+              <td>{{ Produit_defectueux.quantite }}</td>
+              <td>{{ Produit_defectueux.description }}</td>
+              <td>{{ Produit_defectueux.Produits }}</td>
+              <td>
+                  <!-- Bouton pour voir -->
+                  <a href="{% url 'voir_produit_defectueux' Produit_defectueux.id %}" class="btn btn-info">Voir</a>
+                  
+                  <!-- Bouton pour modifier -->
+                  <a href="{% url 'modifier_produit_defectueux' Produit_defectueux.id %}" class="btn btn-warning">Modifier</a>
+                  
+                  <!-- Bouton pour supprimer -->
+                  <form action="{% url 'supprimer_produit_defectueux' Produit_defectueux.id %}" method="post" style="display: inline;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger">Supprimer</button>
+                  </form>
+              </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock%}

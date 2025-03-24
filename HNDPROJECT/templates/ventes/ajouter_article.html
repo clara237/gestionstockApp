@@ -1,0 +1,22 @@
+<!-- ajouter_article.html à enlever -->
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col">
+            <h2>Entrez les détails de l'article:</h2>
+            <form method="POST" id="add-to-cart-form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Liste des Mouvements de Stock</h2>
+
+    
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Produit</th>
+                <th>Type de Mouvement</th>
+                <th>Quantité</th>
+                <th>Quantité Restante</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in mouvements %}
+            <tr class="{% if item.mouvement.type_mouvement == 'ENTREE' %}table-success{% else %}table-danger{% endif %}">
+                <td>{{ item.mouvement.produit.nom }}</td>
+                <td>
+                    {% if item.mouvement.type_mouvement == 'ENTREE' %}
+                        <i class="fas fa-arrow-up"></i> {{ item.mouvement.type_mouvement }}
+                    {% else %}
+                        <i class="fas fa-arrow-down"></i> {{ item.mouvement.type_mouvement }}
+                    {% endif %}
+                </td>
+                <td>{{ item.mouvement.quantite }}</td>
+                <td>{{ item.quantite_restant }}</td>  <!-- Affichage de la quantité restante -->
+                <td>{{ item.mouvement.date }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5">Aucun mouvement de stock disponible.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="notification-container">
+        {% if messages %}
+            <div id="notification-bell" class="bell" onclick="toggleMessages()">
+                <i class="fas fa-bell"></i>
+                <span class="badge">{{ messages|length }}</span>
+            </div>
+            <div id="messages" class="alert alert-warning d-none" role="alert">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Assurez-vous d'inclure Font Awesome pour les icônes -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    .notification-container {
+        position: relative;
+        margin-top: 20px;
+    }
+    .bell {
+        font-size: 24px;
+        cursor: pointer;
+    }
+    .badge {
+        position: absolute;
+        top: -5px;
+        right: -10px;
+        background-color: red;
+        color: white;
+        border-radius: 50%;
+        padding: 2px 5px;
+        font-size: 12px;
+    }
+    .d-none {
+        display: none;
+    }
+    @keyframes blink {
+        0% { opacity: 1; }
+        50% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+    .bell.blink {
+        animation: blink 1s infinite;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const bell = document.getElementById('notification-bell');
+        const messagesDiv = document.getElementById('messages');
+
+        if (bell && messagesDiv && messagesDiv.innerHTML.trim()) {
+            bell.classList.add('blink'); // Ajoute l'effet de clignotement si des messages sont présents
+        }
+    });
+
+    function toggleMessages() {
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.classList.toggle('d-none'); // Affiche ou masque les messages
+        const bell = document.getElementById('notification-bell');
+        bell.classList.remove('blink'); // Retire l'effet de clignotement après le clic
+    }
+</script>
+{% endblock %}

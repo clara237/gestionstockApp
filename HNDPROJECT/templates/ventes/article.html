@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    tr {
+        background-color: white;
+    }
+
+    tr:hover {
+        background-color: #e6f2ff; /* Bleu clair pour le survol */
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #99ccff; /* Bleu professionnel pour l'en-tête */
+    }
+</style>
+    <div class="container mt-5">
+        
+        <h1>Formulaire de Commande avec Panier</h1>
+        <form id="order-form" method ='post' action ='{% url  'enregistrer_commandes' %}'>
+            {% csrf_token %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="items-table">
+                    <tr class="item-row">
+                       <td><select name="product[]" id="" class="form-control">{% for product in Produit_object%} <option value="{{ product.id }} "> {{product.nom}}</option> {% endfor%}       
+                             </select></td> 
+                        <td><input type="number" name="quantity[]" class="form-control"></td>
+                        <td><input type="text" name="description[]" class="form-control"></td>
+                        <td><button type="button" class="btn btn-danger remove-item">Supprimer</button></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-success" id="add-item">Ajouter</button>
+          
+            <button type="submit" class="btn btn-primary">Valider</button>
+            <div id="cart">
+                {% if messages %}
+                <div class="container mt-3">
+                    <ul class="messages list-unstyled">
+                        {% for message in messages %}
+                            <li class="alert {% if message.tags %}{{ message.tags }}{% endif %}" role="alert">
+                                {{ message }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+            
+                <h2>Panier</h2>
+                <ul id="cart-items"></ul>
+                <button type="button" class="btn btn-primary" id="submit-cart">Passer la commande</button>
+            </div>
+            
+        </form>
+
+    </div>   
+{% endblock %}

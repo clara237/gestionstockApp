@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mt-4 mb-4">Facture #{{facture.id}}</h1>
+    <div>
+        <p><strong>Client:</strong> {{facture.client.nom}}</p>
+        <p><strong>Commande:</strong> {{facture.commande.produit}}</p>
+        <p><strong>Total:</strong> {{facture.total}} €</p>
+    </div>
+    <div class="mt-4 mb-4">
+        <a href="{% url 'generate_pdf' facture_id=facture.id %}" class="btn btn-primary" role="button">Télécharger en PDF</a>
+    </div>
+</div>
+{% endblock %}

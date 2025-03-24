@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Liste des Produits</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Description</th>
+                <th>Prix de Vente</th>
+                <th>Quantité Initiale</th>
+                <th>Quantité Restante</th>
+                <th>État du Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for produit in produits %}
+            <tr>
+                <td>{{ produit.nom }}</td>
+                <td>{{ produit.description }}</td>
+                <td>{{ produit.prix_vente|floatformat:0 }} FCFA</td>
+                <td>{{ produit.quantite_recu }}</td>
+                <td {% if produit.quantite_restant <= produit.seuil_alerte %}class="text-danger fw-bold"{% endif %}>
+                    {{ produit.quantite_restant }}
+                </td>
+                <td>
+                    {% if produit.quantite_restant == 0 %}
+                        <span class="badge bg-danger">Rupture de stock</span>
+                    {% elif produit.quantite_restant <= produit.seuil_alerte %}
+                        <span class="badge bg-warning text-dark">Stock faible</span>
+                    {% else %}
+                        <span class="badge bg-success">En stock</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center text-muted">
+                    <i class="bi bi-inbox"></i> Aucun produit disponible.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .table th {
+        background-color: #f8f9fa;
+    }
+    
+    .badge {
+        font-size: 0.85em;
+        padding: 0.5em 0.75em;
+    }
+    
+    tr:hover {
+        background-color: #f5f5f5;
+    }
+</style>
+{% endblock %}

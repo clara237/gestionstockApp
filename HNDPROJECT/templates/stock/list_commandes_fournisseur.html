@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+    .table-responsive {
+        max-width: 800px; /* Fixe une largeur maximale pour le tableau */
+        margin: auto; /* Centre le tableau */
+        overflow-x: auto; /* Ajoute un défilement horizontal si nécessaire */
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    tr {
+        background-color: white;
+    }
+
+    tr:hover {
+        background-color: #e6f2ff; /* Bleu clair pour le survol */
+    }
+
+    th,
+    td {
+        padding: 8px; /* Espace autour des cellules */
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        font-size: 14px; /* Taille de la police */
+    }
+
+    th {
+        background-color: #99ccff; /* Bleu professionnel pour l'en-tête */
+        font-size: 16px; /* Taille de police légèrement plus grande pour les en-têtes */
+    }
+
+    .no-data {
+        text-align: center;
+        padding: 20px;
+        font-size: 16px;
+        color: #888;
+    }
+</style>
+
+<div class="table-responsive">
+    <table id="datatable-buttons" class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th scope="col">Produits</th>
+                <th scope="col">Fournisseur</th>
+                <th scope="col">Quantité <br>commandée</th>
+                <th scope="col">Quantité <br> reçue</th>
+                <th scope="col">Date de <br> commande</th>
+                <th scope="col">Date prévue <br> de Livraison</th>
+                <th scope="col">Date de <br> livraison</th>
+                <th scope="col">Prix <br> d'achat</th>
+                <th scope="col">Prix <br> de vente</th>
+                <th scope="col">Numéro du <br> conteneur</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% if commande_fournisseurs %}
+                {% for commande_fournisseur in commande_fournisseurs %}
+                <tr>
+                    <td>{{ commande_fournisseur.nom }}</td>
+                    <td>{{ commande_fournisseur.fournisseur }}</td>
+                    <td>{{ commande_fournisseur.quantite_commande }}</td>
+                    <td>{{ commande_fournisseur.quantite_recu }}</td>
+                    <td>{{ commande_fournisseur.date_commande }}</td>
+                    <td>{{ commande_fournisseur.date_prevu_livraison }}</td>
+                    <td>{{ commande_fournisseur.date_livraison }}</td>
+                    <td>{{ commande_fournisseur.prix_achat }}</td>
+                    <td>{{ commande_fournisseur.prix_vente }}</td>
+                    <td>{{ commande_fournisseur.numero_contenaire }}</td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="10" class="no-data">Aucune commande disponible.</td>
+                </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}

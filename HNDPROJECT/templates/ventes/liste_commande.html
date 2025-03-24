@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.3/js/jquery.dataTables.min.js"></script>
+
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    tr {
+        background-color: white;
+    }
+
+    tr:hover {
+        background-color: #e6f2ff; /* Bleu clair pour le survol */
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #99ccff; /* Bleu professionnel pour l'en-tête */
+    }
+
+    .client-row {
+        background-color: #f2f2f2; /* Gris clair pour les lignes de client */
+        font-weight: bold;
+    }
+</style>
+<div class="container mt-5">
+    {% if messages %}
+        {% for message in messages %}
+            <p>{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+    
+    <h1>Liste des commandes</h1>
+    <table class="table" id="datatable-buttons">
+        <thead>
+            <tr>
+                <th>Client</th>
+                <th>Produit</th>
+                <th>Quantité</th>
+                <th>Spécification</th>
+                <th>Prix Unitaire</th>
+                <th>Total</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+                {% for commande in client.commandes_set.all %}
+                <tr>
+                    {% if forloop.first %}
+                    <td rowspan="{{ client.commandes_set.count }}">{{ client.nom }}</td>
+                    {% endif %}
+                    <td>{{ commande.produit.nom }}</td>
+                    <td>{{ commande.quantity }}</td>
+                    <td>{{ commande.Specification }}</td>
+                    <td>{{ commande.produit.prix }}</td>
+                    <td>{{ commande.total }}</td>
+                    {% if forloop.first %}
+                    <td rowspan="{{ client.commandes_set.count }}">
+                        <a href="{% url 'generate_facture' client.id %}" class="btn btn-primary">Générer Facture</a>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#datatable-buttons').DataTable({
+            "paging": true,
+            "searching": true,
+            "ordering": true,
+            "order": [[0, 'asc']], // Trier par client
+            "columnDefs": [
+                { "orderable": false, "targets": 6 } // Désactiver le tri sur la colonne Actions
+            ]
+        });
+    });
+</script>
+{% endblock %}

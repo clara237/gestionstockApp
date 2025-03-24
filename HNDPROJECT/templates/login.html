@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        /* Ajout de styles CSS personnalisés */
+        body {
+            background-color: #f8f9fa; /* Couleur de fond */
+        }
+        .card {
+            border: none; /* Suppression de la bordure de la carte */
+            border-radius: 10px; /* Arrondi des coins de la carte */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Ombre de la carte */
+        }
+        .bg-primary {
+            background-color: #6c757d !important; /* Gris foncé pour la couleur primaire */
+        }
+        .bg-success {
+            background-color: #28a745 !important; /* Vert pour la couleur de succès */
+        }
+        .bg-danger {
+            background-color: #dc3545 !important; /* Rouge pour la couleur d'erreur */
+        }
+        .bg-warning {
+            background-color: #ffc107 !important; /* Jaune pour la couleur d'avertissement */
+        }
+        .bg-info {
+            background-color: #17a2b8 !important; /* Bleu clair pour la couleur d'information */
+        }
+        .text-primary {
+            color: #6c757d !important; /* Gris foncé pour la couleur de texte primaire */
+        }
+        .text-success {
+            color: #28a745 !important; /* Vert pour la couleur de texte de succès */
+        }
+        .text-danger {
+            color: #dc3545 !important; /* Rouge pour la couleur de texte d'erreur */
+        }
+        .text-warning {
+            color: #ffc107 !important; /* Jaune pour la couleur de texte d'avertissement */
+        }
+        .text-info {
+            color: #17a2b8 !important; /* Bleu clair pour la couleur de texte d'information */
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-primary text-white"> <!-- Ajout de classes pour la couleur de fond et du texte -->
+                        <h4 class="mb-0">Authentification</h4> <!-- Ajout de marge en bas -->
+                    </div>
+                    <div class="card-body">
+                        <form action="{% url 'login' %}" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <input type="text" class="form-control" name="username" id="username" placeholder="Nom d'utilisateur">
+                            </div>
+                            <div class="form-group">
+                                <input type="password" class="form-control" name="password" id="password" placeholder="Mot de passe">
+                            </div>
+                            <p>J'ai pas de<a href="{% url 'register' %}"> compte</a></p>
+                            <button type="submit" class="btn btn-primary">Connexion</button> <!-- Utilisation de classes Bootstrap pour le bouton -->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

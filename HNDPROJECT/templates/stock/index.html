@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+
+    th, td {
+      padding: 10px;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+  </style>
+    {% if ruptures %}
+    <div class="alert alert-warning" role="alert">
+      Attention ! Certains produits sont en rupture de stock :
+      <ul>
+          {% for rupture in ruptures %}
+          <li>{{ rupture.nom }}</li>
+          {% endfor %}
+      </ul>
+  </div>
+  {% else %}
+  <p>Aucun produit n'est en rupture pour le moment.</p>
+  {% endif %}
+<div class="container-fluid pt-4 px-4">
+    <div class="row g-4">
+        {% for produit in produits %}
+            <div class="col-sm-6 col-xl-3">
+                <div class="bg-light rounded d-flex align-items-center justify-content-between p-4">
+                    <i class="fa fa-chart-line fa-3x text-success"></i>
+                    <div class="ms-3">
+                        <p class="mb-2">{{ produit.nom }}</p>
+                        <h6 class="mb-0">{{ produit.quantite }} disponibles</h6>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<br><br>
+<div class="container">
+    <h2 class="title">Mouvements de Stock</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Produit</th>
+          <th>Type de Mouvement</th>
+          <th>Quantité</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for commande in commandes %}
+        <tr>
+          <td>{{ commande.date_commande }}</td>
+          <td>{{ commande.produit }}</td>
+          
+          {% if commande %}
+          <td>Sortie</td>
+          {% endif %}
+            
+          <td> {{commande.quantity}} </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+{% endblock %}

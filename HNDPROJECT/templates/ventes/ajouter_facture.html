@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center mt-4 mb-4">Entrez une nouvelle facture</h1>
+    <form method="post" class="needs-validation" novalidate action="{% url 'generate_facture' %}">
+        {% csrf_token %}
+        <div class="form-row">
+            <div class="form-group col-md-6 offset-md-3">
+                <label for="client">Client</label>
+                <select name="client" id="client" class="form-control">
+                    <option value="">Choisissez un client...</option>
+                    {% for client in clients %}
+                        <option value="{{ client.id }}">{{ client.nom }}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">Veuillez choisir un client.</div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6 offset-md-3">
+                <label for="commande">Commande</label>
+                <select name="commande" id="commande" class="form-control">
+                    <option value="">Choisissez une commande...</option>
+                    {% for commande in commandes %}
+                        <option value="{{ commande.id }}" data-prix="{{ commande.prix }}">{{ commande.produit }}</option>
+                    {% endfor %}
+                </select>
+                <div class="invalid-feedback">Veuillez choisir une commande.</div>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6 offset-md-3">
+                <label for="total">Total</label>
+                <input type="number" step="0.01" name="total" id="total" class="form-control" value="{{ total }}" readonly>
+            </div>
+        </div>
+        
+
+        <div class="form-row">
+            <div class="form-group col-md-6 offset-md-3">
+                <button type="submit" class="btn btn-primary">Enregistrer la facture</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script>
+    // récupérer les éléments DOM
+    const selectCommande = document.querySelector('#commande');
+    const inputTotal = document.querySelector('#total');
+
+    // ajouter un événement de changement de sélection à la liste déroulante de commande
+    selectCommande.addEventListener('change', (event) => {
+        // récupérer le prix de la commande sélectionnée
+        const prix = parseFloat(event.target.selectedOptions[0].dataset.prix);
+
+        // afficher le prix dans le champ de saisie du total
+        inputTotal.value = prix.toFixed(2);
+    });
+</script>
+
+{% endblock %}

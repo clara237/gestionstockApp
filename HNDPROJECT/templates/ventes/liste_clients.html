@@ -1,0 +1,244 @@
+{% extends "base.html" %}
+
+{% block title %}Liste des clients{% endblock %}
+
+{% block content %}
+<style>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    tr {
+        background-color: white;
+    }
+
+    tr:hover {
+        background-color: #e6f2ff; /* Bleu clair pour le survol */
+    }
+
+    th,
+    td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #99ccff; /* Bleu professionnel pour l'en-tête */
+    }
+</style>
+<div class="container">
+    <h2 class="my-4">Liste des clients</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Téléphone</th>
+                <th>Adresse</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for client in clients %}
+            <tr>
+                <td>{{ client.nom }}</td>
+                <td>{{ client.email }}</td>
+                <td>{{ client.telephone }}</td>
+                <td>{{ client.adresse }}</td>
+                <td>
+                    <button class="btn btn-info" data-toggle="modal" data-target="#voirClientModal" data-url="{% url 'voir_client' client.id %}">Voir</button>
+<button class="btn btn-warning" data-toggle="modal" data-target="#modifierClientModal" data-url="{% url 'modifier_client' client.id %}">Modifier</button>
+<button class="btn btn-danger" data-toggle="modal" data-target="#supprimerClientModal" data-url="{% url 'supprimer_client' client.id %}">Supprimer</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Voir Client Modal -->
+<div class="modal fade" id="voirClientModal" tabindex="-1" role="dialog" aria-labelledby="voirClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="voirClientModalLabel">Voir Client</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>Détails du Client</h4>
+                <p><strong>Nom:</strong> <span id="client-nom"></span></p>
+                <p><strong>Email:</strong> <span id="client-email"></span></p>
+                <p><strong>Téléphone:</strong> <span id="client-telephone"></span></p>
+                <p><strong>Adresse:</strong> <span id="client-adresse"></span></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modifier Client Modal -->
+<div class="modal fade" id="modifierClientModal" tabindex="-1" role="dialog" aria-labelledby="modifierClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modifierClientModalLabel">Modifier Client</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="form-modifier-client" method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="modifier-nom">Nom</label>
+                        <input type="text" class="form-control" id="modifier-nom" name="nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-email">Email</label>
+                        <input type="email" class="form-control" id="modifier-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-telephone">Téléphone</label>
+                        <input type="text" class="form-control" id="modifier-telephone" name="telephone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modifier-adresse">Adresse</label>
+                        <input type="text" class="form-control" id="modifier-adresse" name="adresse" required>
+                    </div>
+                    <input type="hidden" id="modifier-client-id" name="client_id">
+                    <button type="submit" class="btn btn-primary">Modifier</button>
+                </form>
+                <div id="modifier-message"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Supprimer Client Modal -->
+<div class="modal fade" id="supprimerClientModal" tabindex="-1" role="dialog" aria-labelledby="supprimerClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="supprimerClientModalLabel">Supprimer Client</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Êtes-vous sûr de vouloir supprimer ce client ?</p>
+            </div>
+            <div class="modal-footer">
+                <form id="form-supprimer-client" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" id="client-id" name="client_id" value="">
+                    <button type="submit" class="btn btn-danger">Supprimer</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                </form>
+                <div id="supprimer-message"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('[data-toggle="modal"]').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var target = button.getAttribute('data-target');
+                var url = button.getAttribute('data-url');
+
+                if (target === '#voirClientModal') {
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Erreur réseau');
+                            return response.json();
+                        })
+                        .then(data => {
+                            document.getElementById('client-nom').textContent = data.nom;
+                            document.getElementById('client-email').textContent = data.email;
+                            document.getElementById('client-telephone').textContent = data.telephone;
+                            document.getElementById('client-adresse').textContent = data.adresse;
+                        })
+                        .catch(error => console.error('Erreur lors de la récupération des données:', error));
+                } else if (target === '#modifierClientModal') {
+                    fetch(url)
+                        .then(response => {
+                            if (!response.ok) throw new Error('Erreur réseau');
+                            return response.json();
+                        })
+                        .then(data => {
+                            document.getElementById('modifier-nom').value = data.nom;
+                            document.getElementById('modifier-email').value = data.email;
+                            document.getElementById('modifier-telephone').value = data.telephone;
+                            document.getElementById('modifier-adresse').value = data.adresse;
+                            document.getElementById('modifier-client-id').value = data.id;
+                        })
+                        .catch(error => console.error('Erreur lors de la récupération des données:', error));
+                } else if (target === '#supprimerClientModal') {
+                    var clientId = url.split('/').pop();
+                    document.getElementById('client-id').value = clientId;
+                }
+            });
+        });
+
+        document.getElementById('form-modifier-client').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var clientId = document.getElementById('modifier-client-id').value;
+            var url = "{% url 'modifier_client' 0 %}".replace('0', clientId);
+            var formData = new FormData(this);
+
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('modifier-message').innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    document.getElementById('modifier-message').innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
+                }
+            })
+            .catch(() => {
+                document.getElementById('modifier-message').innerHTML = '<div class="alert alert-danger">Erreur lors de la modification.</div>';
+            });
+        });
+
+        document.getElementById('form-supprimer-client').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var clientId = document.getElementById('client-id').value;
+            var url = "{% url 'supprimer_client' 0 %}".replace('0', clientId);
+            var formData = new FormData(this);
+
+            fetch(url, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('supprimer-message').innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                    setTimeout(() => location.reload(), 2000);
+                } else {
+                    document.getElementById('supprimer-message').innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
+                }
+            })
+            .catch(() => {
+                document.getElementById('supprimer-message').innerHTML = '<div class="alert alert-danger">Erreur lors de la suppression.</div>';
+            });
+        });
+    });
+</script>
+{% endblock %}
